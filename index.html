@@ -54,7 +54,7 @@
     
     /* Kolom Kanan: Karton */
     .col-ctn { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-    .col-ctn input[type="number"] { text-align: right; margin: 0; }
+    .col-ctn input { text-align: right; margin: 0; }
 
     /* Layout untuk pilihan radio opsi mesin menyamping penuh di bawah baris input */
     .machine-options {
@@ -131,6 +131,19 @@
   <script>
     let itemCount = 0;
 
+    // Fungsi untuk memformat input angka secara real-time menjadi ribuan ber-titik
+    function formatRibuanInput(element) {
+      // Hapus semua karakter yang bukan angka
+      let value = element.value.replace(/[^0-9]/g, '');
+      
+      if (value) {
+        // Format menjadi ribuan dengan titik Indonesia
+        element.value = parseInt(value, 10).toLocaleString('id-ID');
+      } else {
+        element.value = '';
+      }
+    }
+
     function addItem() {
       itemCount++;
       const div = document.createElement('div');
@@ -153,7 +166,7 @@
             <input type="text" id="namaCustom${itemCount}" placeholder="Ketik nama prodak" style="display: none;">
           </div>
           <div class="col-ctn">
-            <input type="number" id="ctn${itemCount}" placeholder="Karton">
+            <input type="text" id="ctn${itemCount}" placeholder="Karton" oninput="formatRibuanInput(this)">
           </div>
         </div>
         
@@ -213,7 +226,9 @@
             nama = selectElement.value;
           }
 
-          const ctn = parseInt(ctnElement.value.trim()) || 0;
+          // Hilangkan karakter titik terlebih dahulu agar bisa dihitung sebagai angka murni
+          let ctnRaw = ctnElement.value.replace(/\./g, '');
+          const ctn = parseInt(ctnRaw) || 0;
 
           if (nama && ctn > 0) {
             if (gabungItem[nama]) {
@@ -226,7 +241,8 @@
       }
 
       for (const [nama, ctn] of Object.entries(gabungItem)) {
-        rekap += `${lineNomor}. ${nama} : ${ctn} ctn\n`;
+        // Hasil cetak tiap item sekarang menggunakan format ribuan ber-titik
+        rekap += `${lineNomor}. ${nama} : ${ctn.toLocaleString('id-ID')} ctn\n`;
         totalCtn += ctn;
         lineNomor++;
       }
