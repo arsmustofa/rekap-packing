@@ -98,7 +98,7 @@
     <div class="header-grid">
       <div class="grid-col">
         <label>Tanggal</label>
-        <input type="date" id="tanggal" value="2026-05-21">
+        <input type="date" id="tanggal">
       </div>
       <div class="grid-col">
         <label>Shift</label>
@@ -180,16 +180,19 @@
       document.getElementById('items').appendChild(div);
     }
 
+    // Perbaikan fungsi toggle custom input untuk mencegah error saat inisialisasi awal
     function toggleCustomInput(id) {
       const selectElement = document.getElementById(`namaSelect${id}`);
       const customInputElement = document.getElementById(`namaCustom${id}`);
       
-      if (selectElement.value === "CUSTOM") {
-        customInputElement.style.display = "block";
-        customInputElement.focus();
-      } else {
-        customInputElement.style.display = "none";
-        customInputElement.value = "";
+      if (selectElement && customInputElement) {
+        if (selectElement.value === "CUSTOM") {
+          customInputElement.style.display = "block";
+          customInputElement.focus();
+        } else {
+          customInputElement.style.display = "none";
+          customInputElement.value = "";
+        }
       }
     }
 
@@ -264,6 +267,17 @@
     }
 
     window.onload = () => {
+      // Mengatur tanggal otomatis ke hari ini saat script dibuka
+      const tglInput = document.getElementById('tanggal');
+      if (tglInput) {
+        const hariIni = new Date();
+        const tahun = hariIni.getFullYear();
+        const bulan = String(hariIni.getMonth() + 1).padStart(2, '0');
+        const tanggal = String(hariIni.getDate()).padStart(2, '0');
+        tglInput.value = `${tahun}-${bulan}-${tanggal}`;
+      }
+
+      // Membuka 4 baris item bawaan
       addItem();
       addItem();
       addItem();
