@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konversi Packing Spesifikasi Produksi</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background-color: #f4f6f9;
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            max-width: 100%;
+            box-sizing: border-box;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        h2 {
+            color: #1f4e78;
+            text-align: center;
+            border-bottom: 3px solid #1f4e78;
+            padding-bottom: 10px;
+            font-size: 1.1rem;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+        /* Pembungkus Tabel */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid #d5d8dc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            flex: 1;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        th {
+            background-color: #1f4e78;
+            color: white;
+            padding: 10px 8px;
+            border: 1px solid #d5d8dc;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        td {
+            padding: 10px 8px;
+            border: 1px solid #d5d8dc;
+            text-align: center;
+            vertical-align: middle;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        /* Container Dropdown di Dalam Tabel */
+        .inline-filter-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 5px 0;
+        }
+        /* Desain Dropdown Mini Dalam Tabel */
+        select {
+            width: 100%;
+            padding: 6px;
+            background-color: #fff2cc; 
+            font-weight: bold;
+            border: 1px solid #bda86b;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            text-align: center;
+            text-align-last: center;
+            box-sizing: border-box;
+        }
+        select:disabled {
+            background-color: #eaeded;
+            border-color: #d5d8dc;
+            cursor: not-allowed;
+        }
+        /* Efek Highlight untuk item yang dipilih */
+        tr.highlighted-row {
+            background-color: #d4efdf !important;
+            font-weight: bold;
+            border: 2px solid #27ae60;
+        }
+        .text-left {
+            text-align: left !important;
+            padding-left: 12px;
+        }
+        .empty-placeholder {
+            text-align: center;
+            padding: 40px 15px;
+            color: #7f8c8d;
+            font-style: italic;
+            font-size: 14px;
+        }
+        .footer-creator {
+            text-align: center;
+            margin-top: auto;
+            padding-top: 15px;
+            font-size: 10px;
+            color: #7f8c8d;
+            opacity: 0.6;
+            font-weight: 500;
+        }
+        @media (min-width: 768px) {
+            body { padding: 20px; }
+            .container { padding: 20px; }
+            h2 { font-size: 1.4rem; }
+            table { font-size: 14px; }
+            select { font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>DATA KONVERSI PRODUKSI PACKING</h2>
+    
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 1%; min-width: 190px; vertical-align: top; padding-top: 8px;">
+                        <div>Item</div>
+                        <div class="inline-filter-container">
+                            <select id="categorySelect" onchange="onCategoryChange()">
+                                <option value="">-- Pilih Kategori --</option>
+                                <option value="Bakso">Bakso</option>
+                                <option value="Naget">Naget</option>
+                                <option value="Sosis">Sosis</option>
+                                <option value="Olahan Ikan">Olahan Ikan</option>
+                                <option value="Lainnya">Burger & Olahan Lainnya</option>
+                            </select>
+                            <select id="productSelect" onchange="onProductChange()" disabled>
+                                <option value="">-- Pilih Item --</option>
+                            </select>
+                        </div>
+                    </th>
+                    <th>Batch besar</th>
+                    <th>Batch kecil</th>
+                    <th>Kg/Batch kecil</th>
+                    <th>Konversi ctn/batch kecil</th>
+                    <th>Berat/ctn</th>
+                    <th>Pack/ctn</th>
+                    <th>Vacuum Pack</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td colspan="8" class="empty-placeholder">Silahkan tentukan Kategori Produk pada kolom <b>Item</b> terlebih dahulu.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer-creator">
+        Create by: @ars.mustofa
+    </div>
+</div>
+
+<script>
+const productDatabase = {
+    "Salam Bakso Ayam 500 gr": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 11, "berat_ctn": 6, "pack_ctn": 12, "vacuum": 396},
+    "Salam Bakso Kerikil 500 gr": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 11, "berat_ctn": 6, "pack_ctn": 12, "vacuum": 396},
+    "Salam Bakso Sapi 500 gr": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 11, "berat_ctn": 6, "pack_ctn": 12, "vacuum": 396},
+    "Kamil Bakso Sapi 250 gr": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 35, "konversi": 7, "berat_ctn": 7.5, "pack_ctn": 30, "vacuum": 270},
+    "Kamil Bakso Sapi 500 gr": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 35, "konversi": 11, "berat_ctn": 6, "pack_ctn": 12, "vacuum": 132},
+    "Kamil Bakso Sapi 750 gr": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 35, "konversi": 9, "berat_ctn": 7.5, "pack_ctn": 10, "vacuum": 90},
+    "Kamil Bakso Ayam 200 gr": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 35, "konversi": 11, "berat_ctn": 6, "pack_ctn": 30, "vacuum": 330},
+    "Kamil Bakso Ayam 500 gr": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 35, "konversi": 11, "berat_ctn": 6, "pack_ctn": 12, "vacuum": 132},
+    "Kober Bakso Ayam 1000": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 11, "berat_ctn": 6, "pack_ctn": 6, "vacuum": 198},
+    "Salam Sosis Ayam 375 (15)": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 9, "berat_ctn": 7.5, "pack_ctn": 20, "vacuum": 1800},
+    "Salam Sosis Ayam 500 (20)": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 1400},
+    "Salam Sosis Ayam 500 (15)": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 1400},
+    "Salam Sosis Ayam 1000 (40)": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 10, "vacuum": 700},
+    "Salam Sosis Ayam 1000 (30)": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 10, "vacuum": 700},
+    "Salam Sosis Merah 500 (21)": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 1400},
+    "Salam Sosis Merah 500 (16)": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 1400},
+    "Salam Sosis Merah 750 (32)": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 8, "berat_ctn": 9, "pack_ctn": 12, "vacuum": 960},
+    "Salam Sosis Merah 1000 (40)": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 10, "vacuum": 700},
+    "Salam Sosis Merah 1000 (30)": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 10, "vacuum": 700},
+    "Salam Sosis Sapi 500 (15)": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 1400},
+    "Salam Sosis Sapi 750 gr": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 9, "pack_ctn": 12, "vacuum": 840},
+    "Salam Sosis Sapi 1000 (40)": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 10, "vacuum": 700},
+    "Salam Sosis Sapi 1000 (30)": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 10, "vacuum": 700},
+    "Salam Bakar Mini 3": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 6.5, "berat_ctn": 6, "pack_ctn": 40, "vacuum": 780},
+    "Salam Bakar Mini 4": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 12, "berat_ctn": 5.25, "pack_ctn": 30, "vacuum": 1080},
+    "Salam Bakar Mini 11": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 10, "vacuum": 210},
+    "Salam Bakar Mini 12": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 10, "vacuum": 210},
+    "Salam Bakar Mini 13": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 6, "berat_ctn": 9.9, "pack_ctn": 18, "vacuum": 324},
+    "Salam Bakar Jumbo": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Salam Bakar Jumbo 8": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 5, "berat_ctn": 10.8, "pack_ctn": 18, "vacuum": 270},
+    "Salam Scallop": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 11, "berat_ctn": 6, "pack_ctn": 12, "vacuum": 396},
+    "Salam Kornet Ayam 450 gr": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 8, "berat_ctn": 9, "pack_ctn": 20, "vacuum": 480},
+    "Salam Kornet Kotak 450 gr": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 8, "berat_ctn": 9, "pack_ctn": 20, "vacuum": 480},
+    "Salam Kornet Koin 500 gr": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Salam Naget 1000 gr": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 29, "berat_ctn": 5, "pack_ctn": 5, "vacuum": 870},
+    "Salam Naget 500 gr": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 29, "berat_ctn": 5, "pack_ctn": 20, "vacuum": 1740},
+    "Salam Naget 250 gr": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 29, "berat_ctn": 5, "pack_ctn": 20, "vacuum": 3480},
+    "Salam Naget Stik 500 gr": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 29, "berat_ctn": 5, "pack_ctn": 20, "vacuum": 1740},
+    "Salam Naget Stik 250 gr": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 29, "berat_ctn": 5, "pack_ctn": 20, "vacuum": 3480},
+    "Salam Naget Hati 500 gr": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 28, "berat_ctn": 5, "pack_ctn": 20, "vacuum": 1680},
+    "Salam Naget Hati 1000 gr": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 26, "berat_ctn": 5, "pack_ctn": 5, "vacuum": 780},
+    "Salam Fishroll 200 gr": {"batch_besar": "-", "batch_kecil": "-", "kg_batch_kecil": 70, "konversi": 15, "berat_ctn": 4.8, "pack_ctn": 24, "vacuum": 360},
+    "Salam Fishroll 450 gr": {"batch_besar": "-", "batch_kecil": "-", "kg_batch_kecil": 70, "konversi": 13, "berat_ctn": 5.4, "pack_ctn": 12, "vacuum": 156},
+    "Salam Chicken Dumpling": {"batch_besar": "-", "batch_kecil": "-", "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 140},
+    "Salam Cheese Dumpling": {"batch_besar": "-", "batch_kecil": "-", "kg_batch_kecil": 70, "konversi": 8, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 160},
+    "Salam Otak-otak 500 gr": {"batch_besar": "-", "batch_kecil": "-", "kg_batch_kecil": 70, "konversi": 6, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 120},
+    "Salam Otak-otak 1000 gr": {"batch_besar": "-", "batch_kecil": "-", "kg_batch_kecil": 70, "konversi": 6, "berat_ctn": 10, "pack_ctn": 10, "vacuum": 60},
+    "Kamil Sosis Ayam 500 (8)": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Kamil Sosis Ayam 500 (10)": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Kamil Sosis Ayam Blackpeper 500 (6)": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Kamil Sosis Ayam Blackpeper 500 (10)": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Kamil Sosis Sapi 500 (6)": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Kamil Sosis Sapi 500 (10)": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Kamil Sosis Sapi 500 (12)": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Kamil Sosis Sapi 1000 (13)": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 10, "vacuum": 210},
+    "Kamil Sosis Sapi Blackpeper 500 (6)": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Kamil Sosis Sapi Blackpeper 500 (10)": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Kamil Beef Burger 500": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 11, "berat_ctn": 6, "pack_ctn": 20, "vacuum": 660},
+    "Kamil Beef Burger 500 (Tebal)": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 9, "berat_ctn": 7.5, "pack_ctn": 15, "vacuum": 405},
+    "Kamil Crispy Burger 300": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 19, "berat_ctn": 6, "pack_ctn": 20, "vacuum": 2280},
+    "Kamil Serbaguna 450 gr": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 6.5, "berat_ctn": 10.8, "pack_ctn": 24, "vacuum": 468},
+    "Kamil Serbaguna 80 gr": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 9.6, "pack_ctn": 120, "vacuum": 2520},
+    "Kamil Soya 375": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 9, "berat_ctn": 9, "pack_ctn": 24, "vacuum": 2160},
+    "Kamil Naget Ayam 500": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 26, "berat_ctn": 5, "pack_ctn": 20, "vacuum": 1560},
+    "Kamil Naget Ayam 250": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 26, "berat_ctn": 5, "pack_ctn": 20, "vacuum": 3120},
+    "Zaitun Spicy Wing 500": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 150, "konversi": 25, "berat_ctn": 5, "pack_ctn": 10, "vacuum": 250},
+    "Zaitun Karage 500": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 150, "konversi": 40, "berat_ctn": 5, "pack_ctn": 10, "vacuum": 400},
+    "Zaitun Katsu": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 150, "konversi": 45, "berat_ctn": 5, "pack_ctn": 10, "vacuum": 450},
+    "Zaitun Crispy Crunch 250": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 50, "konversi": 16, "berat_ctn": 3.75, "pack_ctn": 15, "vacuum": 270},
+    "Zaitun Chicken Pok-pok": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 100, "konversi": 30, "berat_ctn": 5, "pack_ctn": 10, "vacuum": 300},
+    "Zaitun Beef Breakfast 500": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Zaitun Beef Breakfast 1000": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 10, "vacuum": 420},
+    "Zaitun Chicken Breakfast 250": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 9, "berat_ctn": 8, "pack_ctn": 32, "vacuum": 864},
+    "Zaitun Chicken Breakfast 500": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Zaitun Chicken Breakfast 1000": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 10, "vacuum": 420},
+    "Zaitun Chicken Bratwurst": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Zaitun Beef Bratwurst": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Zaitun Beef Cocktail 500": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 6.5, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 390},
+    "Zaitun Beef Cocktail 900": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 6.5, "berat_ctn": 10.8, "pack_ctn": 12, "vacuum": 250},
+    "Zaitun Naget Stikie Original": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 28, "berat_ctn": 5, "pack_ctn": 20, "vacuum": 1680},
+    "Zaitun Naget Stikie Cheese": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 28, "berat_ctn": 5, "pack_ctn": 20, "vacuum": 1680},
+    "Zaitun Crispy Naget 250": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 30, "berat_ctn": 5, "pack_ctn": 20, "vacuum": 3600},
+    "Zaitun Crispy Naget 400": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 36, "berat_ctn": 4, "pack_ctn": 10, "vacuum": 2160},
+    "Zaitun Crispy Naget 500": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 30, "berat_ctn": 5, "pack_ctn": 10, "vacuum": 1800},
+    "Kober Sosis Ayam 1000": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 10, "vacuum": 700},
+    "Kober Scallop": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 14, "berat_ctn": 5, "pack_ctn": 5, "vacuum": 210},
+    "Kober Chicken Wing": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 100, "konversi": 12, "berat_ctn": 6.5, "pack_ctn": 5, "vacuum": 60},
+    "Kober Chicken Katsu": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 100, "konversi": 24, "berat_ctn": 5, "pack_ctn": 5, "vacuum": 120},
+    "Kober Chicken Karage": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 100, "konversi": 19, "berat_ctn": 5, "pack_ctn": 5, "vacuum": 95},
+    "Maslahat Sosis Bakar Jumbo": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Maslahat Sosis Bakar Mini 11": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Maslahat Sosis Bakar Mini 12": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Maslahat Naget 500": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 29, "berat_ctn": 5, "pack_ctn": 10, "vacuum": 1740},
+    "Maslahat Naget 250": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 29, "berat_ctn": 5, "pack_ctn": 10, "vacuum": 1740},
+    "Maslahat Katsu": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 100, "konversi": 28, "berat_ctn": 4.8, "pack_ctn": 12, "vacuum": 336},
+    "Maslahat Spicy Wing": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 100, "konversi": 30, "berat_ctn": 4.8, "pack_ctn": 12, "vacuum": 360},
+    "Maslahat Karage": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 100, "konversi": 30, "berat_ctn": 4.8, "pack_ctn": 12, "vacuum": 360},
+    "Hisana Scallop 1000": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 11, "berat_ctn": 6, "pack_ctn": 6, "vacuum": 198},
+    "Adib Sosis Ayam 375": {"batch_besar": 1, "batch_kecil": 10, "kg_batch_kecil": 70, "konversi": 9, "berat_ctn": 9, "pack_ctn": 24, "vacuum": 2160},
+    "Adib Spicy Wing": {"batch_besar": "-", "batch_kecil": 1, "kg_batch_kecil": 100, "konversi": 20, "berat_ctn": 5, "pack_ctn": 10, "vacuum": 200},
+    "Adib Sapi Original 500 gr (6)": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Adib Sapi Original 500 gr (10)": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Adib Ayam Original 500 gr (6)": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Adib Ayam Original 500 gr (10)": {"batch_besar": 1, "batch_kecil": 3, "kg_batch_kecil": 70, "konversi": 7, "berat_ctn": 10, "pack_ctn": 20, "vacuum": 420},
+    "Adib Naget 500 gr": {"batch_besar": 1, "batch_kecil": 6, "kg_batch_kecil": 100, "konversi": 29, "berat_ctn": 5, "pack_ctn": 20, "vacuum": 1740}
+};
+
+function getFilteredProducts(category) {
+    const keys = Object.keys(productDatabase);
+    
+    if (category === "Bakso") {
+        return keys.filter(name => name.toLowerCase().includes("bakso"));
+    } else if (category === "Naget") {
+        return keys.filter(name => name.toLowerCase().includes("naget") || name.toLowerCase().includes("crunch"));
+    } else if (category === "Sosis") {
+        return keys.filter(name => name.toLowerCase().includes("sosis") || name.toLowerCase().includes("bakar") || name.toLowerCase().includes("bratwurst") || name.toLowerCase().includes("cocktail") || name.toLowerCase().includes("breakfast"));
+    } else if (category === "Olahan Ikan") {
+        return keys.filter(name => name.toLowerCase().includes("dumpling") || name.toLowerCase().includes("otak") || name.toLowerCase().includes("fishroll") || name.toLowerCase().includes("scallop"));
+    } else if (category === "Lainnya") {
+        return keys.filter(name => {
+            const n = name.toLowerCase();
+            return !n.includes("bakso") && !n.includes("naget") && !n.includes("crunch") && 
+                   !n.includes("sosis") && !n.includes("bakar") && !n.includes("bratwurst") && 
+                   !n.includes("cocktail") && !n.includes("breakfast") && !n.includes("dumpling") && 
+                   !n.includes("otak") && !n.includes("fishroll") && !n.includes("scallop");
+        });
+    }
+    return [];
+}
+
+function onCategoryChange() {
+    const catSelect = document.getElementById("categorySelect");
+    const prodSelect = document.getElementById("productSelect");
+    const selectedCategory = catSelect.value;
+    
+    if (!selectedCategory) {
+        prodSelect.innerHTML = '<option value="">-- Pilih Item --</option>';
+        prodSelect.disabled = true;
+        document.getElementById("tableBody").innerHTML = `
+            <tr>
+                <td colspan="8" class="empty-placeholder">Silahkan tentukan Kategori Produk pada kolom <b>Item</b> terlebih dahulu.</td>
+            </tr>`;
+        return;
+    }
+    
+    const filteredItems = getFilteredProducts(selectedCategory);
+    
+    let options = '<option value="">-- Semua Item ' + selectedCategory + ' --</option>';
+    filteredItems.forEach(name => {
+        options += `<option value="${name}">${name}</option>`;
+    });
+    prodSelect.innerHTML = options;
+    prodSelect.disabled = false;
+    
+    renderTable(filteredItems);
+}
+
+function renderTable(itemList, highlightItem = "") {
+    const tBody = document.getElementById("tableBody");
+    
+    if (itemList.length === 0) {
+        tBody.innerHTML = `<tr><td colspan="8" class="empty-placeholder">Tidak ada data produk.</td></tr>`;
+        return;
+    }
+    
+    let rowsHtml = "";
+    itemList.forEach(name => {
+        const item = productDatabase[name];
+        const isHighlight = (name === highlightItem) ? "class='highlighted-row'" : "";
+        
+        rowsHtml += `
+            <tr ${isHighlight} id="row-${btoa(name).replace(/=/g, "")}">
+                <td class="text-left">${name}</td>
+                <td>${item.batch_besar}</td>
+                <td>${item.batch_kecil}</td>
+                <td>${item.kg_batch_kecil}</td>
+                <td>${item.konversi}</td>
+                <td>${item.berat_ctn}</td>
+                <td>${item.pack_ctn}</td>
+                <td>${item.vacuum}</td>
+            </tr>
+        `;
+    });
+    
+    tBody.innerHTML = rowsHtml;
+
+    if (highlightItem) {
+        const targetId = "row-" + btoa(highlightItem).replace(/=/g, "");
+        const targetRow = document.getElementById(targetId);
+        if (targetRow) {
+            targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+}
+
+function onProductChange() {
+    const catSelect = document.getElementById("categorySelect");
+    const prodSelect = document.getElementById("productSelect");
+    
+    const selectedCategory = catSelect.value;
+    const selectedProduct = prodSelect.value;
+    const filteredItems = getFilteredProducts(selectedCategory);
+    
+    renderTable(filteredItems, selectedProduct);
+}
+</script>
+</body>
+</html>
