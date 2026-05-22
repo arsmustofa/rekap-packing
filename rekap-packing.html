@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rekap Packing Generator</title>
+  <style>
+    /* Mengatur box-sizing agar padding tidak merusak ukuran lebar elemen */
+    * { box-sizing: border-box; }
+    
+    body { font-family: Arial, sans-serif; margin: 15px; background: #f8f9fa; }
+    .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h1 { text-align: center; color: #2c3e50; font-size: 22px; margin-top: 5px; margin-bottom: 20px; }
+    
+    input, select, button { padding: 10px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc; width: 100%; }
+    button { background: #27ae60; color: white; font-weight: bold; cursor: pointer; border: none; text-align: center; }
+    button:hover { background: #219653; }
+    
+    /* Style untuk tombol hapus */
+    .btn-delete { background: #c0392b; }
+    .btn-delete:hover { background: #962d22; }
+    
+    /* Container untuk membungkus tombol tambah dan hapus agar sejajar */
+    .action-buttons { display: flex; gap: 8px; margin-top: 5px; }
+    
+    textarea { width: 100%; height: 260px; font-family: monospace; font-size: 15px; margin-top: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
+    
+    /* Layout Info Atas (Tanggal, Shift, Grup) - Dibuat Sejajar & Rapi */
+    .header-grid { 
+      display: grid; 
+      grid-template-columns: 2fr 1fr 1fr; /* Tanggal dapat porsi lebih besar, Shift & Grup sama rata */
+      gap: 10px; 
+      margin-bottom: 15px;
+    }
+    .grid-col { display: flex; flex-direction: column; }
+    .grid-col label { font-size: 13px; font-weight: bold; color: #333; margin-bottom: 2px; }
+    
+    /* Layout Blok Item Packing */
+    .item-block { 
+      background: #fdfdfd;
+      border: 1px solid #e2e8f0;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    
+    /* Layout Baris Atas Blok (Input Textbox berdampingan) */
+    .item-row { display: flex; gap: 8px; align-items: flex-start; width: 100%; }
+    
+    /* Kolom Kiri: Nama Item */
+    .col-nama { flex: 2; min-width: 0; display: flex; flex-direction: column; }
+    .col-nama select { margin: 0; }
+    .col-nama input[type="text"] { margin-top: 5px; margin-bottom: 0; }
+    
+    /* Kolom Kanan: Karton */
+    .col-ctn { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .col-ctn input { text-align: right; margin: 0; }
+
+    /* Layout untuk pilihan radio opsi mesin menyamping penuh di bawah baris input */
+    .machine-options {
+      display: flex;
+      flex-direction: row; /* Berjejer menyamping */
+      justify-content: flex-start;
+      gap: 12px;           /* Jarak antar opsi */
+      margin-top: 10px;    /* Memberi jarak dari input di atasnya */
+      padding-left: 2px;
+      width: 100%;         /* Memanjang penuh hingga ke bawah area karton */
+    }
+    .machine-options label {
+      font-size: 12px;
+      color: #555;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap; /* Mencegah teks terpotong ke bawah */
+    }
+    .machine-options input[type="radio"] {
+      width: auto;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    /* Style untuk watermark/credit di bawah */
+    .footer-credit {
+      text-align: center;
+      font-size: 11px;
+      color: #95a5a6;
+      margin-top: 25px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📦 Hasil Packing Line-4</h1>
+    
+    <div class="header-grid">
+      <div class="grid-col">
+        <label>Tanggal</label>
+        <input type="date" id="tanggal">
+      </div>
+      <div class="grid-col">
+        <label>Shift</label>
+        <input type="text" id="shift" value="" placeholder="1">
+      </div>
+      <div class="grid-col">
+        <label>Grup</label>
+        <input type="text" id="grup" value="" placeholder="A">
+      </div>
+    </div>
+
+    <h3 style="margin-top: 20px; font-size: 16px; margin-bottom: 10px;">Input Item Packing</h3>
+    <div id="items"></div>
+    
+    <div class="action-buttons">
+      <button onclick="addItem()" style="font-size: 13px; padding: 8px 12px; width: auto;">+ Tambah Item</button>
+      <button onclick="removeItem()" class="btn-delete" style="font-size: 13px; padding: 8px 12px; width: auto;">- Hapus Item</button>
+    </div>
+
+    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+    <button onclick="generateRekap()" style="width: 100%; font-size: 16px; padding: 12px;">Rekap</button>
+
+    <h3 style="margin-top: 20px; font-size: 16px; margin-bottom: 10px;">Hasil Rekap (Siap Copy ke WA)</h3>
+    <textarea id="output" readonly placeholder="Hasil rekap akan muncul di sini..."></textarea>
+    <button onclick="copyToClipboard()" style="margin-top: 10px; width: 100%;">📋 Copy ke Clipboard</button>
+    
+    <div class="footer-credit">create by: @ars.mustofa</div>
+  </div>
+
+  <script>
+    let itemCount = 0;
+
+    // Fungsi untuk memformat input angka secara real-time menjadi ribuan ber-titik
+    function formatRibuanInput(element) {
+      // Hapus semua karakter yang bukan angka
+      let value = element.value.replace(/[^0-9]/g, '');
+      
+      if (value) {
+        // Format menjadi ribuan dengan titik Indonesia
+        element.value = parseInt(value, 10).toLocaleString('id-ID');
+      } else {
+        element.value = '';
+      }
+    }
+
+    function addItem() {
+      itemCount++;
+      const div = document.createElement('div');
+      div.className = 'item-block';
+      div.id = `itemRow${itemCount}`;
+      div.innerHTML = `
+        <div class="item-row">
+          <div class="col-nama">
+            <select id="namaSelect${itemCount}" onchange="toggleCustomInput(${itemCount})">
+              <option value="" disabled selected>-- Pilih Item --</option>
+              <option value="Salam bakso ayam">Salam bakso ayam</option>
+              <option value="Salam bakso kerikil">Salam bakso kerikil</option>
+              <option value="Salam bakso sapi">Salam bakso sapi</option>
+              <option value="Salam bakso jumbo">Salam bakso jumbo</option>
+              <option value="Kamil bakso sapi 250">Kamil bakso sapi 250</option>
+              <option value="Kamil bakso sapi 500">Kamil bakso sapi 500</option>
+              <option value="Kamil bakso sapi 750">Kamil bakso sapi 750</option>
+              <option value="CUSTOM">Prodak lain</option>
+            </select>
+            <input type="text" id="namaCustom${itemCount}" placeholder="Ketik nama prodak" style="display: none;">
+          </div>
+          <div class="col-ctn">
+            <input type="text" id="ctn${itemCount}" placeholder="Karton" oninput="formatRibuanInput(this)">
+          </div>
+        </div>
+        
+        <div class="machine-options">
+          <label><input type="radio" name="mesin${itemCount}" value="MHW-3" checked> MHW-3</label>
+          <label><input type="radio" name="mesin${itemCount}" value="MHW-E"> MHW-E</label>
+          <label><input type="radio" name="mesin${itemCount}" value="MHC"> MHC</label>
+          <label><input type="radio" name="mesin${itemCount}" value="Manual"> Manual</label>
+        </div>
+      `;
+      document.getElementById('items').appendChild(div);
+    }
+
+    // Perbaikan fungsi toggle custom input untuk mencegah error saat inisialisasi awal
+    function toggleCustomInput(id) {
+      const selectElement = document.getElementById(`namaSelect${id}`);
+      const customInputElement = document.getElementById(`namaCustom${id}`);
+      
+      if (selectElement && customInputElement) {
+        if (selectElement.value === "CUSTOM") {
+          customInputElement.style.display = "block";
+          customInputElement.focus();
+        } else {
+          customInputElement.style.display = "none";
+          customInputElement.value = "";
+        }
+      }
+    }
+
+    function removeItem() {
+      if (itemCount > 0) {
+        const lastItem = document.getElementById(`itemRow${itemCount}`);
+        if (lastItem) {
+          lastItem.remove();
+          itemCount--;
+        }
+      } else {
+        alert('⚠️ Tidak ada item yang bisa dihapus!');
+      }
+    }
+
+    function generateRekap() {
+      let rekap = `*Hasil packing*\n\n`;
+      let totalCtn = 0;
+      let lineNomor = 1;
+      
+      let gabungItem = {};
+
+      for (let i = 1; i <= itemCount + 100; i++) { 
+        const selectElement = document.getElementById(`namaSelect${i}`);
+        const customInputElement = document.getElementById(`namaCustom${i}`);
+        const ctnElement = document.getElementById(`ctn${i}`);
+
+        if (selectElement && ctnElement) {
+          let nama = "";
+          
+          if (selectElement.value === "CUSTOM") {
+            nama = customInputElement ? customInputElement.value.trim() : "";
+          } else {
+            nama = selectElement.value;
+          }
+
+          // Hilangkan karakter titik terlebih dahulu agar bisa dihitung sebagai angka murni
+          let ctnRaw = ctnElement.value.replace(/\./g, '');
+          const ctn = parseInt(ctnRaw) || 0;
+
+          if (nama && ctn > 0) {
+            if (gabungItem[nama]) {
+              gabungItem[nama] += ctn;
+            } else {
+              gabungItem[nama] = ctn;
+            }
+          }
+        }
+      }
+
+      for (const [nama, ctn] of Object.entries(gabungItem)) {
+        // Hasil cetak tiap item sekarang menggunakan format ribuan ber-titik
+        rekap += `${lineNomor}. ${nama} : ${ctn.toLocaleString('id-ID')} ctn\n`;
+        totalCtn += ctn;
+        lineNomor++;
+      }
+
+      rekap += `\nTotal : ${totalCtn.toLocaleString('id-ID')} ctn`;
+      document.getElementById('output').value = rekap;
+    }
+
+    function copyToClipboard() {
+      const output = document.getElementById('output');
+      if (!output.value) {
+        alert('❌ Belum ada data rekap yang di-generate!');
+        return;
+      }
+      output.select();
+      output.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+      alert('✅ Berhasil dicopy! Langsung paste ke grup WA.');
+    }
+
+    window.onload = () => {
+      // Mengatur tanggal otomatis ke hari ini saat script dibuka
+      const tglInput = document.getElementById('tanggal');
+      if (tglInput) {
+        const hariIni = new Date();
+        const tahun = hariIni.getFullYear();
+        const bulan = String(hariIni.getMonth() + 1).padStart(2, '0');
+        const tanggal = String(hariIni.getDate()).padStart(2, '0');
+        tglInput.value = `${tahun}-${bulan}-${tanggal}`;
+      }
+
+      // Membuka 4 baris item bawaan
+      addItem();
+      addItem();
+      addItem();
+      addItem();
+    };
+  </script>
+</body>
+</html>
