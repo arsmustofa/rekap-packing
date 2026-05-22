@@ -14,16 +14,15 @@ Anda dapat langsung mengakses halaman-halaman aplikasi melalui tautan cepat di b
 
 | Nama Fitur / Halaman | Fungsi Utama | Link Akses Langsung |
 | :--- | :--- | :--- |
-| **🏠 Menu Utama (Dashboard)** | Pintu masuk dan navigasi aplikasi | [Buka Dashboard 🌐](https://arsmustofa.github.io/rekap-packing/) |
-| **📊 Rekap Packing** | Input dan melihat data rekap hasil packing | [Buka Halaman Rekap 📄](https://arsmustofa.github.io/rekap-packing/rekap-packing.html) |
-| **🔄 Konversi Packing** | Alat hitung dan konversi satuan produksi | [Buka Halaman Konversi 📄](https://arsmustofa.github.io/rekap-packing/konversi-packing.html) |
-| **📈 Laporan Packing** | Ringkasan dan laporan akhir produksi | [Buka Halaman Laporan 📄](https://arsmustofa.github.io/rekap-packing/laporan-packing.html) |
+| **🏠 Menu Utama (Dashboard)** | Pintu masuk dan navigasi aplikasi | [Buka Dashboard 🌐](https://arsmustofa.github.io/aris-packing/) |
+| **📊 Rekap Packing** | Input dan melihat data rekap hasil packing | [Buka Halaman Rekap 📄](https://arsmustofa.github.io/aris-packing/rekap-packing.html) |
+| **🔄 Konversi Packing** | Alat hitung dan konversi satuan produksi | [Buka Halaman Konversi 📄](https://arsmustofa.github.io/aris-packing/konversi-packing.html) |
 
 ---
 
 ## ✨ Fitur & Keunggulan
-* **Akses Real-Time:** Dapat dibuka langsung oleh tim melalui HP maupun laptop.
-* **Desain Responsif:** Tampilan web menyesuaikan ukuran layar agar tetap nyaman digunakan di area kerja.
+* **Akses Real-Time:** Dapat dibuka langsung oleh tim melalui HP maupun laptop di area kerja.
+* **Desain Responsif:** Tampilan web menyesuaikan ukuran layar agar tetap nyaman digunakan di lapangan.
 * **Navigasi Mandiri:** Setiap halaman memiliki link spesifik yang bisa disimpan (*bookmark*) sesuai kebutuhan bagian kerja masing-masing.
 
 ---
