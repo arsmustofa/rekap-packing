@@ -172,7 +172,7 @@
         
         <div class="machine-options">
           <label><input type="radio" name="mesin${itemCount}" value="MHW-3" checked> MHW-3</label>
-          <label><input type="radio" name="mesin${itemCount}" value="MHW-E"> MHW-E</label>
+          <label><input type="radio" name="mesin${itemCount}" value="MHW-4"> MHW-4</label>
           <label><input type="radio" name="mesin${itemCount}" value="MHC"> MHC</label>
           <label><input type="radio" name="mesin${itemCount}" value="Manual"> Manual</label>
         </div>
@@ -196,6 +196,7 @@
       }
     }
 
+    // Fungsi hapus item
     function removeItem() {
       if (itemCount > 0) {
         const lastItem = document.getElementById(`itemRow${itemCount}`);
