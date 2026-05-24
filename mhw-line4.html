@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Laporan MHW</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            background: #fff;
+            margin: 0 auto 20px auto;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* --- EDIT BAGIAN JUDUL (DI-PEPETKAN & MODIFIKASI PACKING LINE-4) --- */
+        .header-perusahaan {
+            text-align: center;
+            margin-bottom: 25px; 
+        }
+
+        .header-perusahaan h2 {
+            color: #1e4620;
+            margin: 0; 
+            padding: 0;
+            font-size: 24px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+
+        .header-perusahaan .garis-judul {
+            width: 100%; 
+            height: 2px;
+            background-color: #e2e8f0; 
+            margin: 4px 0 2px 0; 
+            border: none;
+        }
+
+        .header-perusahaan .sub-judul {
+            font-size: 13px; 
+            font-style: italic; 
+            letter-spacing: 2px; 
+            color: #1e4620; 
+            opacity: 0.5; 
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* SECTION: Background terpisah untuk Kontak Leader */
+        .leader-container {
+            max-width: 600px;
+            background: #fff;
+            margin: 25px auto 0 auto;
+            padding: 25px 25px 220px 25px; 
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+            position: relative; 
+        }
+
+        .section-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            background: #edf2f7;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        .leader-container .section-title {
+            margin-top: 0; 
+        }
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            width: 40%;
+            font-size: 14px;
+            color: #4a5568;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 60%;
+            padding: 8px 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        /* Style pembungkus khusus input dengan satuan di sampingnya */
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            width: 60%;
+            gap: 8px;
+        }
+        .input-with-unit input {
+            width: 100% !important;
+        }
+        .input-with-unit .unit-text {
+            font-size: 14px;
+            font-weight: normal; /* EDIT: Dibuat tidak bold */
+            color: #4a5568;
+            min-width: 35px;
+            text-align: right; /* EDIT: Rata kanan */
+        }
+        .form-group input[readonly] {
+            background-color: #edf2f7;
+            color: #4a5568;
+            cursor: not-allowed;
+        }
+        #batch_awal, #batch_akhir, #tinggalan_batch_awal, #tinggalan_batch_akhir, #kode3_batch_awal, #kode3_batch_akhir {
+            text-align: center;
+        }
+        .kendala-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            width: 100%;
+        }
+        .kendala-item input {
+            width: 100% !important;
+        }
+        .action-kendala-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        .btn-remove-kendala {
+            background-color: #e53e3e;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            font-size: 13px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            display: none;
+        }
+        .btn-remove-kendala:hover { background-color: #c53030; }
+        .btn-add-kendala {
+            background-color: #4a5568;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            font-size: 13px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-add-kendala:hover { background-color: #2d3748; }
+        .btn-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-gen, .btn-copy, .btn-wa-leader {
+            background-color: #25d366;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: auto;
+            min-width: 180px;
+            box-shadow: 0 4px 6px rgba(37, 211, 102, 0.2);
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-gen:hover, .btn-copy:hover, .btn-wa-leader:hover { background-color: #20ba5a; }
+        .btn-copy {
+            display: none;
+            margin: 15px auto 0 auto;
+        }
+        .btn-wa-leader {
+            display: none;
+            margin: 25px auto 0 auto; 
+        }
+        .preview-box {
+            margin-top: 15px;
+            background: #f8f9fa;
+            border: 1px dashed #cbd5e0;
+            padding: 15px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 13px;
+            color: #718096;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+        .preview-box.generated {
+            color: #333;
+            text-align: left;
+            display: block;
+        }
+        .watermark {
+            position: absolute;
+            bottom: 15px; 
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 11px;
+            color: #a0aec0;
+            opacity: 0.5;
+            font-style: italic;
+        }
+        .toast {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1000;
+        }
+        .radio-group {
+            display: flex;
+            width: 60%;
+            gap: 20px;
+            align-items: center;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            width: auto;
+            cursor: pointer;
+        }
+        .radio-group input {
+            width: auto;
+            cursor: pointer;
+        }
+        /* Style pembungkus grup reject dengan persentase di kanan */
+        .reject-input-group {
+            display: flex;
+            width: 60%;
+            gap: 10px;
+        }
+        .reject-input-group input[type="number"] {
+            width: 65%;
+        }
+        .reject-input-group input.pct-box {
+            width: 35%;
+            text-align: center;
+        }
+        /* Style untuk teks info tanggal di sebelah kanan input batch */
+        .batch-date-text {
+            font-size: 14px;
+            color: #4a5568;
+            width: 30%;
+            text-align: right;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-perusahaan">
+        <h2>Input Laporan MHW</h2>
+        <hr class="garis-judul">
+        <p class="sub-judul">Packing Line-4</p>
+    </div>
+    
+    <div class="section-title">Informasi Umum</div>
+    <div class="form-group">
+        <label>Pilih Mesin</label>
+        <select id="mesin" onchange="updateLabelMesin()">
+            <option value="" selected disabled>-- mesin --</option>
+            <option value="MHW-3">MHW-3</option>
+            <option value="MHW-4">MHW-4</option>
+            <option value="MHC">MHC</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Nama Produk</label>
+        <select id="produk" onchange="eksekusiPerubahanProduk()">
+            <option value="" disabled selected>-- pilih produk --</option>
+            <option value="Salam Bakso Ayam 500 gr">Salam Bakso Ayam 500 gr</option>
+            <option value="Salam Bakso Kerikil 500 gr">Salam Bakso Kerikil 500 gr</option>
+            <option value="Salam Bakso Sapi Banded 100 gr">Salam Bakso Sapi Banded 100 gr</option>
+            <option value="Salam Bakso Kerikil Banded 100 gr">Salam Bakso Kerikil Banded 100 gr</option>
+            <option value="Salam Naget 250 gr">Salam Naget 250 gr</option>
+            <option value="Salam Naget 500 gr">Salam Naget 500 gr</option>
+            <option value="Salam Naget 1000 gr">Salam Naget 1000 gr</option>
+            <option value="Salam Naget Stik 250 gr">Salam Naget Stik 250 gr</option>
+            <option value="Salam Naget Stik 500 gr">Salam Naget Stik 500 gr</option>
+            <option value="Salam Naget Stik 1000 gr">Salam Naget Stik 1000 gr</option>
+            <option value="Salam Naget Hati 500 gr">Salam Naget Hati 500 gr</option>
+            <option value="Salam Naget Hati 1000 gr">Salam Naget Hati 1000 gr</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Pilih Tanggal</label>
+        <input type="date" id="tanggal_pilih" onchange="updateOtomatisTanggalBatch()">
+    </div>
+    <div class="form-group">
+        <label>Shift / Grup</label>
+        <div style="display: flex; width: 60%; gap: 10px;">
+            <select id="shift_select" style="width: 50%;">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+            <select id="grup_select" style="width: 50%;">
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="section-title" id="title_hasil_mesin">Hasil MHW (Pack)</div>
+    
+    <div class="form-group" id="row_mhw_1">
+        <label id="lbl_mhw_1">E1</label>
+        <div class="input-with-unit">
+            <input type="number" id="mhw_e1" placeholder="0" min="0" oninput="hitungOtomatisJumlah()">
+            <span class="unit-text">pack</span>
+        </div>
+    </div>
+    
+    <div class="form-group" id="row_mhw_2">
+        <label id="lbl_mhw_2">E2</label>
+        <div class="input-with-unit">
+            <input type="number" id="mhw_e2" placeholder="0" min="0" oninput="hitungOtomatisJumlah()">
+            <span class="unit-text">pack</span>
+        </div>
+    </div>
+    
+    <div class="form-group" id="row_mhw_jumlah">
+        <label>Jumlah</label>
+        <div class="input-with-unit">
+            <input type="number" id="mhw_jumlah" value="0" readonly>
+            <span class="unit-text">pack</span>
+        </div>
+    </div>
+
+    <div class="form-group" id="row_total_packing_pack">
+        <label>Total packing</label>
+        <div class="input-with-unit">
+            <input type="number" id="total_packing_pack" value="0" readonly>
+            <span class="unit-text">pack</span>
+        </div>
+    </div>
+    
+    <!-- SECTION HASIL MHW: Modifikasi Input Total Packing Menjadi Total Transfer -->
+    <div class="form-group">
+        <label>Total transfer</label>
+        <div class="input-with-unit">
+            <input type="number" id="total_packing_input" placeholder="-- tanya checker --" min="0" oninput="eksekusiPerubahanTotalPacking()">
+            <span class="unit-text">ctn</span>
+        </div>
+    </div>
+
+    <div class="section-title" id="title_reject_mesin">Reject MHW (Pcs)</div>
+    
+    <div class="form-group">
+        <label>Horizontal</label>
+        <div class="reject-input-group">
+            <input type="number" id="rej_horizontal" placeholder="0" min="0" oninput="hitungTotalRejectDulu()">
+            <input type="text" id="pct_horizontal" class="pct-box" value="0%" readonly>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Vertical</label>
+        <div class="reject-input-group">
+            <input type="number" id="rej_vertical" placeholder="0" min="0" oninput="hitungTotalRejectDulu()">
+            <input type="text" id="pct_vertical" class="pct-box" value="0%" readonly>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Lubang</label>
+        <div class="reject-input-group">
+            <input type="number" id="rej_lubang" placeholder="0" min="0" oninput="hitungTotalRejectDulu()">
+            <input type="text" id="pct_lubang" class="pct-box" value="0%" readonly>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Setting</label>
+        <div class="reject-input-group">
+            <input type="number" id="rej_setting" placeholder="0" min="0" oninput="hitungTotalRejectDulu()">
+            <input type="text" id="pct_setting" class="pct-box" value="0%" readonly>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Over</label>
+        <div class="reject-input-group">
+            <input type="number" id="rej_over" placeholder="0" min="0" oninput="hitungTotalRejectDulu()">
+            <input type="text" id="pct_over" class="pct-box" value="0%" readonly>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Under</label>
+        <div class="reject-input-group">
+            <input type="number" id="rej_under" placeholder="0" min="0" oninput="hitungTotalRejectDulu()">
+            <input type="text" id="pct_under" class="pct-box" value="0%" readonly>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Crash</label>
+        <div class="reject-input-group">
+            <input type="number" id="rej_crash" placeholder="0" min="0" oninput="hitungTotalRejectDulu()">
+            <input type="text" id="pct_crash" class="pct-box" value="0%" readonly>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Terlipat</label>
+        <div class="reject-input-group">
+            <input type="number" id="rej_terlipat" placeholder="0" min="0" oninput="hitungTotalRejectDulu()">
+            <input type="text" id="pct_terlipat" class="pct-box" value="0%" readonly>
+        </div>
+    </div>
+    
+    <!-- INPUT BARU: Total Reject Readonly -->
+    <div class="form-group">
+        <label style="font-weight: bold;">Total reject</label>
+        <div class="reject-input-group">
+            <input type="number" id="rej_total_auto" value="0" readonly style="font-weight: bold;">
+            <input type="text" id="pct_total" class="pct-box" value="0%" readonly style="font-weight: bold;">
+        </div>
+    </div>
+
+    <div class="section-title">Sampel VP Terlipat (100 Pack)</div>
+    <div class="form-group">
+        <label>Ada Sampel ?</label>
+        <div class="radio-group">
+            <label><input type="radio" name="opt_vp" value="ya" checked onchange="toggleInputVP()"> Ya</label>
+            <label><input type="radio" name="opt_vp" value="tidak" onchange="toggleInputVP()"> Tidak</label>
+        </div>
+    </div>
+    <div id="container_sampel_vp">
+        <div class="form-group"><label>Sedikit</label><input type="number" id="sam_sedikit" placeholder="0" min="0" oninput="hitungOtomatisOke()"></div>
+        <div class="form-group"><label>Sedang</label><input type="number" id="sam_sedang" placeholder="0" min="0" oninput="hitungOtomatisOke()"></div>
+        <div class="form-group"><label>Banyak</label><input type="number" id="sam_banyak" placeholder="0" min="0" oninput="hitungOtomatisOke()"></div>
+        <div class="form-group"><label>Oke</label><input type="number" id="sam_oke" value="100" readonly></div>
+    </div>
+
+    <div class="section-title">Data Tambahan</div>
+    <!-- EDIT BARU: Opsi Tinggalan (Ada / Tidak Ada) -->
+    <div class="form-group">
+        <label>Tinggalan</label>
+        <div class="radio-group">
+            <label><input type="radio" name="opt_tinggalan" value="ada" onchange="toggleInputTinggalan()"> Ada</label>
+            <label><input type="radio" name="opt_tinggalan" value="tidak" checked onchange="toggleInputTinggalan()"> Tidak ada</label>
+        </div>
+    </div>
+    <!-- EDIT: Mengubah textbox menjadi format teks biasa rata kanan -->
+    <div class="form-group" id="row_batch_tinggalan" style="display: none;">
+        <label>No Batch</label>
+        <div style="display: flex; width: 60%; gap: 10px; align-items: center;">
+            <input type="number" id="tinggalan_batch_awal" placeholder="001" style="width: 30%;" inputmode="numeric" onblur="formatPaddingBatch(this)">
+            <span>-</span>
+            <input type="number" id="tinggalan_batch_akhir" placeholder="002" style="width: 30%;" inputmode="numeric" onblur="formatPaddingBatch(this)">
+            <span id="tanggal_batch_tinggalan" class="batch-date-text"></span>
+        </div>
+    </div>
+
+    <!-- EDIT: Mengubah textbox menjadi format teks biasa rata kanan -->
+    <div class="form-group">
+        <label>No Batch</label>
+        <div style="display: flex; width: 60%; gap: 10px; align-items: center;">
+            <input type="number" id="batch_awal" placeholder="001" style="width: 30%;" inputmode="numeric" onblur="formatPaddingBatch(this)">
+            <span>-</span>
+            <input type="number" id="batch_akhir" placeholder="002" style="width: 30%;" inputmode="numeric" onblur="formatPaddingBatch(this)">
+            <span id="tanggal_batch_normal" class="batch-date-text"></span>
+        </div>
+    </div>
+
+    <!-- POSISI BARU: FITUR Kode-3 (Ada / Tidak Ada) tepat di atas Pemakaian VP -->
+    <div class="form-group">
+        <label>Kode-3</label>
+        <div class="radio-group">
+            <label><input type="radio" name="opt_kode3" value="ada" onchange="toggleInputKode3()"> Ada</label>
+            <label><input type="radio" name="opt_kode3" value="tidak" checked onchange="toggleInputKode3()"> Tidak ada</label>
+        </div>
+    </div>
+    <!-- Row No Batch untuk Kode-3 -->
+    <div class="form-group" id="row_batch_kode3" style="display: none;">
+        <label>No Batch</label>
+        <div style="display: flex; width: 60%; gap: 10px; align-items: center;">
+            <input type="number" id="kode3_batch_awal" placeholder="001" style="width: 30%;" inputmode="numeric" onblur="formatPaddingBatch(this)">
+            <span>-</span>
+            <input type="number" id="kode3_batch_akhir" placeholder="002" style="width: 30%;" inputmode="numeric" onblur="formatPaddingBatch(this)">
+            <span class="batch-date-text">K3</span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Pemakaian VP</label>
+        <select id="pakai_vp" style="width: 60%;">
+        </select>
+    </div>
+    <div class="form-group" style="display: block; margin-bottom: 20px;">
+        <label style="width: 100%; display: block; margin-bottom: 8px;">Kendala</label>
+        <div id="kendala_container" style="width: 100%;">
+            <div class="kendala-item">
+                <input type="text" class="input-kendala" placeholder="Deskripsi kendala">
+            </div>
+        </div>
+        <div class="action-kendala-container">
+            <button type="button" class="btn-add-kendala" onclick="tambahInputKendala()">+ Tambah Kendala</button>
+            <button type="button" class="btn-remove-kendala" id="btnHapusKendala" onclick="hapusInputKendalaLast()">- Hapus Kendala</button>
+        </div>
+    </div>
+
+    <div class="btn-container">
+        <button type="button" class="btn-gen" onclick="generateWA()">Generate Laporan</button>
+    </div>
+
+    <div class="preview-box" id="previewBox">Hasil generate akan muncul disini...</div>
+    
+    <button type="button" class="btn-copy" id="btnCopy" onclick="copyKeClipboard()">📋 Copy ke Clipboard</button>
+</div>
+
+<div class="leader-container">
+    <div class="section-title">Kontak Leader</div>
+    <div class="form-group">
+        <label>Pilih Leader</label>
+        <select id="pilih_leader" onchange="updateLeaderWhatsApp()">
+            <option value="" selected disabled>-- pilih leader --</option>
+            <option value="diajeng">Diajeng</option>
+            <option value="aris">Aris</option>
+        </select>
+    </div>
+    <div style="text-align: center;">
+        <a href="#" id="btnWALeader" class="btn-wa-leader" target="_blank">💬 WA Leader</a>
+    </div>
+    <div class="watermark">created by: @ars.mustofa</div>
+</div>
+
+<div class="toast" id="toast">Laporan berhasil disalin!</div>
+
+<script>
+    let listProdukAsli = [];
+
+    window.onload = function() {
+        const hariIni = new Date().toISOString().split('T')[0];
+        document.getElementById('tanggal_pilih').value = hariIni;
+
+        const selectVP = document.getElementById('pakai_vp');
+        for (let i = 0; i <= 10; i++) {
+            let opt = document.createElement('option');
+            opt.value = i + " Roll";
+            opt.innerHTML = i + " Roll";
+            if (i === 0) opt.selected = true;
+            selectVP.appendChild(opt);
+        }
+
+        const produkSelect = document.getElementById('produk');
+        for (let i = 0; i < produkSelect.options.length; i++) {
+            listProdukAsli.push({
+                value: produkSelect.options[i].value,
+                text: produkSelect.options[i].text,
+                disabled: produkSelect.options[i].disabled,
+                selected: produkSelect.options[i].selected
+            });
+        }
+        
+        updateLabelMesin();
+        updateOtomatisTanggalBatch();
+    };
+
+    function updateOtomatisTanggalBatch() {
+        const inputTanggalUmum = document.getElementById('tanggal_pilih').value;
+        if (!inputTanggalUmum) return;
+
+        const dateNormal = new Date(inputTanggalUmum);
+        const tglNormal = dateNormal.getDate();
+        document.getElementById('tanggal_batch_normal').innerText = "tgl " + tglNormal;
+
+        const dateTinggalan = new Date(inputTanggalUmum);
+        dateTinggalan.setDate(dateTinggalan.getDate() - 1);
+        const tglTinggalan = dateTinggalan.getDate();
+        document.getElementById('tanggal_batch_tinggalan').innerText = "tgl " + tglTinggalan;
+    }
+
+    function updateLeaderWhatsApp() {
+        const leader = document.getElementById('pilih_leader').value;
+        const btnWA = document.getElementById('btnWALeader');
+        
+        if (leader === "diajeng") {
+            btnWA.href = "https://wa.me/6285607300796";
+            btnWA.style.display = "inline-block";
+        } else if (leader === "aris") {
+            btnWA.href = "https://wa.me/6285730000692";
+            btnWA.style.display = "inline-block";
+        } else {
+            btnWA.style.display = "none";
+        }
+    }
+
+    function updateLabelMesin() {
+        const mesin = document.getElementById('mesin').value;
+        const lbl1 = document.getElementById('lbl_mhw_1');
+        const lbl2 = document.getElementById('lbl_mhw_2');
+        const row2 = document.getElementById('row_mhw_2');
+        const rowJumlah = document.getElementById('row_mhw_jumlah');
+        const titleHasil = document.getElementById('title_hasil_mesin');
+        const titleReject = document.getElementById('title_reject_mesin');
+        const produkSelect = document.getElementById('produk');
+
+        document.getElementById('mhw_e1').readOnly = false;
+        document.getElementById('mhw_e2').readOnly = false;
+
+        if (mesin === "MHC") {
+            produkSelect.innerHTML = "";
+            let optDefault = document.createElement('option');
+            optDefault.value = "";
+            optDefault.text = "-- pilih produk --";
+            optDefault.disabled = true;
+            optDefault.selected = true; // Diubah ke true agar default berada pada pilihan ini
+            produkSelect.appendChild(optDefault);
+
+            let optMhc = document.createElement('option');
+            optMhc.value = "Salam Bakso Sapi Banded 100 gr";
+            optMhc.text = "Salam Bakso Sapi Banded 100 gr";
+            optMhc.selected = false; // Diubah ke false agar pengguna memilih secara manual
+            produkSelect.appendChild(optMhc);
+        } else {
+            produkSelect.innerHTML = "";
+            listProdukAsli.forEach(function(item) {
+                let opt = document.createElement('option');
+                opt.value = item.value;
+                opt.text = item.text;
+                opt.disabled = item.disabled;
+                if (mesin === "") {
+                    opt.selected = (item.value === "");
+                } else {
+                    opt.selected = item.selected;
+                }
+                produkSelect.appendChild(opt);
+            });
+        }
+
+        if (mesin === "MHW-3") {
+            titleHasil.innerText = "Hasil MHW (Pack)";
+            titleReject.innerText = "Reject MHW (Pcs)";
+            lbl1.innerText = "C1";
+            lbl2.innerText = "C2";
+            row2.style.display = "flex";
+            rowJumlah.style.display = "flex";
+        } else if (mesin === "MHW-4" || mesin === "") {
+            titleHasil.innerText = "Hasil MHW (Pack)";
+            titleReject.innerText = "Reject MHW (Pcs)";
+            lbl1.innerText = "E1";
+            lbl2.innerText = "E2";
+            row2.style.display = "flex";
+            rowJumlah.style.display = "flex";
+        } else if (mesin === "MHC") {
+            titleHasil.innerText = "Hasil MHC (Pack)";
+            titleReject.innerText = "Reject MHC (Pcs)";
+            lbl1.innerText = "Hasil MHC";
+            row2.style.display = "none";
+            rowJumlah.style.display = "none"; 
+            document.getElementById('mhw_e2').value = "";
+        }
+        
+        evaluasiAturanGramasi();
+    }
+
+    function hitungTotalRejectDulu() {
+        const hrz = parseInt(document.getElementById('rej_horizontal').value) || 0;
+        const vrt = parseInt(document.getElementById('rej_vertical').value) || 0;
+        const lbg = parseInt(document.getElementById('rej_lubang').value) || 0;
+        const stg = parseInt(document.getElementById('rej_setting').value) || 0;
+        const ovr = parseInt(document.getElementById('rej_over').value) || 0;
+        const udr = parseInt(document.getElementById('rej_under').value) || 0;
+        const crs = parseInt(document.getElementById('rej_crash').value) || 0;
+        const tlp = parseInt(document.getElementById('rej_terlipat').value) || 0;
+
+        const totalReject = hrz + vrt + lbg + stg + ovr + udr + crs + tlp;
+        document.getElementById('rej_total_auto').value = totalReject;
+
+        evaluasiAturanGramasi();
+    }
+
+    function evaluasiAturanGramasi() {
+        const mesin = document.getElementById('mesin').value;
+        const produk = document.getElementById('produk').value || "";
+        const totalPackingInput = parseInt(document.getElementById('total_packing_input').value) || 0;
+        const totalReject = parseInt(document.getElementById('rej_total_auto').value) || 0;
+        
+        const txtBoxE1 = document.getElementById('mhw_e1'); // C1 / E1 / Hasil MHC
+        const txtBoxE2 = document.getElementById('mhw_e2'); // C2 / E2
+        
+        if (mesin === "MHC" || ((mesin === "MHW-3" || mesin === "MHW-4") && produk.includes("100 gr"))) {
+            const totalPackingMHC = totalPackingInput * 60;
+            document.getElementById('total_packing_pack').value = totalPackingMHC;
+
+            const hasilMHCVal = totalPackingMHC + totalReject;
+            document.getElementById('mhw_jumlah').value = hasilMHCVal;
+
+            if (mesin === "MHC") {
+                txtBoxE1.readOnly = true; 
+                txtBoxE1.value = hasilMHCVal;
+            } else {
+                // --- PERUBAHAN: Tetap terapkan aturan khusus open input MHW-3 (C1) dan MHW-4 (E2) ---
+                if (mesin === "MHW-3") {
+                    txtBoxE2.readOnly = true;  // C2 Readonly
+                    txtBoxE1.readOnly = false; // C1 Terbuka (Tidak Readonly)
+                    const c1 = parseInt(txtBoxE1.value) || 0;
+                    txtBoxE2.value = hasilMHCVal - c1;
+                } else if (mesin === "MHW-4") {
+                    txtBoxE1.readOnly = true;  // E1 Readonly
+                    txtBoxE2.readOnly = false; // E2 Terbuka (Tidak Readonly)
+                    const e2 = parseInt(txtBoxE2.value) || 0;
+                    txtBoxE1.value = hasilMHCVal - e2;
+                }
+            }
+
+        } else if ((mesin === "MHW-3" || mesin === "MHW-4") && produk.includes("Naget")) {
+            let pengaliNaget = 12;
+            if (produk.includes("250 gr")) {
+                pengaliNaget = 20;
+            } else if (produk.includes("500 gr")) {
+                pengaliNaget = 10;
+            } else if (produk.includes("1000 gr")) {
+                pengaliNaget = 5;
+            }
+
+            const totalPackingNaget = totalPackingInput * pengaliNaget;
+            document.getElementById('total_packing_pack').value = totalPackingNaget;
+
+            const jumlahNagetVal = totalPackingNaget + totalReject;
+            document.getElementById('mhw_jumlah').value = jumlahNagetVal;
+
+            // --- PERUBAHAN: Aturan ini berlaku untuk semua gramasi Naget ---
+            if (mesin === "MHW-3") {
+                txtBoxE2.readOnly = true;  // C2 Readonly
+                txtBoxE1.readOnly = false; // C1 Terbuka (Tidak Readonly)
+                const c1 = parseInt(txtBoxE1.value) || 0;
+                txtBoxE2.value = jumlahNagetVal - c1;
+            } else if (mesin === "MHW-4") {
+                txtBoxE1.readOnly = true;  // E1 Readonly
+                txtBoxE2.readOnly = false; // E2 Terbuka (Tidak Readonly)
+                const e2 = parseInt(txtBoxE2.value) || 0;
+                txtBoxE1.value = jumlahNagetVal - e2;
+            }
+
+        } else {
+            const jumlahChecker = (totalPackingInput * 12) + totalReject;
+            document.getElementById('mhw_jumlah').value = jumlahChecker;
+            document.getElementById('total_packing_pack').value = jumlahChecker - totalReject;
+
+            // --- PERUBAHAN: Berlaku umum untuk produk lainnya (Bakso 500gr dsb) ---
+            if (mesin === "MHW-3") {
+                txtBoxE2.readOnly = true;  // C2 Readonly
+                txtBoxE1.readOnly = false; // C1 Terbuka (Tidak Readonly)
+                const c1 = parseInt(txtBoxE1.value) || 0;
+                txtBoxE2.value = jumlahChecker - c1;
+            } else if (mesin === "MHW-4") {
+                txtBoxE1.readOnly = true;  // E1 Readonly
+                txtBoxE2.readOnly = false; // E2 Terbuka (Tidak Readonly)
+                const e2 = parseInt(txtBoxE2.value) || 0;
+                txtBoxE1.value = jumlahChecker - e2;
+            } else {
+                txtBoxE1.readOnly = false;
+                txtBoxE2.readOnly = false;
+                hitungOtomatisJumlah();
+            }
+        }
+        
+        hitungOtomatisReject();
+    }
+
+    function eksekusiPerubahanProduk() {
+        hitungKonversiPack();
+        evaluasiAturanGramasi();
+    }
+
+    function eksekusiPerubahanTotalPacking() {
+        hitungKonversiPack();
+        evaluasiAturanGramasi();
+    }
+
+    function hitungOtomatisJumlah() {
+        const mesin = document.getElementById('mesin').value;
+        const totalReject = parseInt(document.getElementById('rej_total_auto').value) || 0;
+
+        if (mesin === "MHC" || mesin === "MHW-3" || mesin === "MHW-4") {
+            evaluasiAturanGramasi();
+            return;
+        }
+
+        const e1 = parseInt(document.getElementById('mhw_e1').value) || 0;
+        const e2 = parseInt(document.getElementById('mhw_e2').value) || 0;
+
+        let jumlahBaru = e1 + e2;
+        document.getElementById('mhw_jumlah').value = jumlahBaru;
+
+        const totalPackingPackVal = jumlahBaru - totalReject;
+        document.getElementById('total_packing_pack').value = totalPackingPackVal >= 0 ? totalPackingPackVal : 0;
+        
+        hitungOtomatisReject();
+    }
+
+    function hitungOtomatisReject() {
+        const hrz = parseInt(document.getElementById('rej_horizontal').value) || 0;
+        const vrt = parseInt(document.getElementById('rej_vertical').value) || 0;
+        const lbg = parseInt(document.getElementById('rej_lubang').value) || 0;
+        const stg = parseInt(document.getElementById('rej_setting').value) || 0;
+        const ovr = parseInt(document.getElementById('rej_over').value) || 0;
+        const udr = parseInt(document.getElementById('rej_under').value) || 0;
+        const crs = parseInt(document.getElementById('rej_crash').value) || 0;
+        const tlp = parseInt(document.getElementById('rej_terlipat').value) || 0;
+
+        const totalReject = hrz + vrt + lbg + stg + ovr + udr + crs + tlp;
+        document.getElementById('rej_total_auto').value = totalReject;
+
+        const jumlahMHW = parseFloat(document.getElementById('mhw_jumlah').value) || 0;
+
+        const setPersenRealtime = (idTarget, nilai) => {
+            if (jumlahMHW === 0 || nilai === 0) {
+                document.getElementById(idTarget).value = "0%";
+                return;
+            }
+            let pct = (nilai / jumlahMHW) * 100;
+            let formattedPct = pct.toFixed(1);
+            if (formattedPct === "0.0" && pct > 0) {
+                formattedPct = pct.toFixed(2);
+            }
+            document.getElementById(idTarget).value = formattedPct.replace('.', ',') + '%';
+        };
+
+        setPersenRealtime('pct_horizontal', hrz);
+        setPersenRealtime('pct_vertical', vrt);
+        setPersenRealtime('pct_lubang', lbg);
+        setPersenRealtime('pct_setting', stg);
+        setPersenRealtime('pct_over', ovr);
+        setPersenRealtime('pct_under', udr);
+        setPersenRealtime('pct_crash', crs);
+        setPersenRealtime('pct_terlipat', tlp);
+        setPersenRealtime('pct_total', totalReject);
+    }
+
+    function dapatkanIsiPerCtn(produk) {
+        if (!produk) return 24; 
+        if (produk.includes("1000 gr")) return 12; 
+        if (produk.includes("500 gr")) return 24;  
+        if (produk.includes("250 gr")) return 48;  
+        if (produk.includes("100 gr")) return 120; 
+        return 24; 
+    }
+
+    function hitungKonversiPack() {
+        const ctnVal = parseInt(document.getElementById('total_packing_input').value) || 0;
+        const produk = document.getElementById('produk').value;
+        const isiPerCtn = dapatkanIsiPerCtn(produk);
+        
+        const dummyInput = { value: ctnVal * isiPerCtn }; 
+        window.tempTotalPackingPackVal = dummyInput.value;
+    }
+
+    function toggleInputVP() {
+        const optVp = document.querySelector('input[name="opt_vp"]:checked').value;
+        const containerSampel = document.getElementById('container_sampel_vp');
+        if (optVp === 'ya') {
+            containerSampel.style.display = 'block';
+        } else {
+            containerSampel.style.display = 'none';
+        }
+    }
+
+    function toggleInputTinggalan() {
+        const optTinggalan = document.querySelector('input[name="opt_tinggalan"]:checked').value;
+        const rowBatchTinggalan = document.getElementById('row_batch_tinggalan');
+        if (optTinggalan === 'ada') {
+            rowBatchTinggalan.style.display = 'flex';
+        } else {
+            rowBatchTinggalan.style.display = 'none';
+            document.getElementById('tinggalan_batch_awal').value = '';
+            document.getElementById('tinggalan_batch_akhir').value = '';
+        }
+        updateOtomatisTanggalBatch();
+    }
+
+    function toggleInputKode3() {
+        const optKode3 = document.querySelector('input[name="opt_kode3"]:checked').value;
+        const rowBatchKode3 = document.getElementById('row_batch_kode3');
+        if (optKode3 === 'ada') {
+            rowBatchKode3.style.display = 'flex';
+        } else {
+            rowBatchKode3.style.display = 'none';
+            document.getElementById('kode3_batch_awal').value = '';
+            document.getElementById('kode3_batch_akhir').value = '';
+        }
+    }
+
+    function formatNilai(nilai, persentase = false, totalMHW = 1) {
+        if (nilai === 0 || nilai === '' || isNaN(nilai)) {
+            return persentase ? '-%' : '- pcs';
+        }
+        if (persentase) {
+            let pct = (nilai / totalMHW) * 100;
+            let formattedPct = pct.toFixed(1);
+            if (formattedPct === "0.0" && pct > 0) {
+                return pct.toFixed(2).replace('.', ',') + '%';
+            }
+            return formattedPct.replace('.', ',') + '%';
+        }
+        return nilai + ' pcs';
+    }
+
+    function formatSampel(nilai) {
+        if (nilai === 0 || nilai === '' || isNaN(nilai)) {
+            return '- pack';
+        }
+        return nilai + ' pack';
+    }
+
+    function formatPaddingBatch(input) {
+        let nilai = input.value.trim();
+        if (nilai !== "" && !isNaN(nilai)) {
+            input.value = nilai.padStart(3, '0');
+        }
+    }
+
+    function hitungOtomatisOke() {
+        const sedikit = parseInt(document.getElementById('sam_sedikit').value) || 0;
+        const sedang = parseInt(document.getElementById('sam_sedang').value) || 0;
+        const banyak = parseInt(document.getElementById('sam_banyak').value) || 0;
+        
+        let hasilOke = 100 - (sedikit + sedang + banyak);
+        if (hasilOke < 0) hasilOke = 0;
+        document.getElementById('sam_oke').value = hasilOke;
+    }
+
+    function tambahInputKendala() {
+        const container = document.getElementById('kendala_container');
+        const item = document.createElement('div');
+        item.className = 'kendala-item';
+        
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'input-kendala';
+        input.placeholder = 'Deskripsi kendala baru';
+        
+        item.appendChild(input);
+        container.appendChild(item);
+        toggleTombolHapus();
+    }
+
+    function hapusInputKendalaLast() {
+        const container = document.getElementById('kendala_container');
+        const items = container.getElementsByClassName('kendala-item');
+        if (items.length > 1) {
+            container.removeChild(items[items.length - 1]);
+        }
+        toggleTombolHapus();
+    }
+
+    function toggleTombolHapus() {
+        const items = document.getElementsByClassName('kendala-item');
+        const btnHapus = document.getElementById('btnHapusKendala');
+        if (items.length > 1) {
+            btnHapus.style.display = 'inline-block';
+        } else {
+            btnHapus.style.display = 'none';
+        }
+    }
+
+    function generateWA() {
+        const produkSelect = document.getElementById('produk');
+        const produk = produkSelect.value;
+        const mesin = document.getElementById('mesin').value;
+        const totalPackingInput = document.getElementById('total_packing_input').value.trim();
+        
+        if (!mesin) {
+            alert("Silakan pilih mesin terlebih dahulu!");
+            return;
+        }
+        if (!produk) {
+            alert("Silakan pilih produk terlebih dahulu!");
+            return;
+        }
+        
+        // Validasi penambahan pesan jika total transfer belum diinput
+        if (totalPackingInput === "") {
+            alert("Silahkan tanya checker terlebih dahulu hasil transfernya berapa!\nJangan terburu-buru untuk pulang !!!");
+            return;
+        }
+
+        const rawDate = document.getElementById('tanggal_pilih').value;
+        let hari_tgl = "-";
+        if (rawDate) {
+            const opsi = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            hari_tgl = new Date(rawDate).toLocaleDateString('id-ID', opsi);
+        }
+
+        const shiftSelect = document.getElementById('shift_select').value;
+        const grupSelect = document.getElementById('grup_select').value;
+        const shiftFull = `${shiftSelect}-${grupSelect}`;
+
+        const e1 = parseInt(document.getElementById('mhw_e1').value) || 0;
+        const e2 = parseInt(document.getElementById('mhw_e2').value) || 0;
+        const jumlahMHW = parseFloat(document.getElementById('mhw_jumlah').value) || 0;
+
+        const hrz = parseInt(document.getElementById('rej_horizontal').value) || 0;
+        const vrt = parseInt(document.getElementById('rej_vertical').value) || 0;
+        const lbg = parseInt(document.getElementById('rej_lubang').value) || 0;
+        const stg = parseInt(document.getElementById('rej_setting').value) || 0;
+        const ovr = parseInt(document.getElementById('rej_over').value) || 0;
+        const udr = parseInt(document.getElementById('rej_under').value) || 0;
+        const crs = parseInt(document.getElementById('rej_crash').value) || 0;
+        const tlp = parseInt(document.getElementById('rej_terlipat').value) || 0;
+
+        const totalReject = hrz + vrt + lbg + stg + ovr + udr + crs + tlp;
+        const hitungTotalPackingPack = parseInt(document.getElementById('total_packing_pack').value) || 0;
+        const totalPacking = `${hitungTotalPackingPack} pack`;
+
+        const bAwal = document.getElementById('batch_awal').value.trim();
+        const bAkhir = document.getElementById('batch_akhir').value.trim();
+        let no_batch = '-';
+        if (bAwal && bAkhir) {
+            no_batch = `${bAwal}-${bAkhir}`;
+        } else if (bAwal || bAkhir) {
+            no_batch = `${bAwal || bAkhir}`;
+        }
+
+        const optTinggalan = document.querySelector('input[name="opt_tinggalan"]:checked').value;
+        const bTinggalanAwal = document.getElementById('tinggalan_batch_awal').value.trim();
+        const bTinggalanAkhir = document.getElementById('tinggalan_batch_akhir').value.trim();
+        const tglTinggalanTxt = document.getElementById('tanggal_batch_tinggalan').innerText;
+        let no_batch_tinggalan = '';
+        if (optTinggalan === 'ada') {
+            if (bTinggalanAwal && bTinggalanAkhir) {
+                no_batch_tinggalan = `${bTinggalanAwal}-${bTinggalanAkhir} (${tglTinggalanTxt})`;
+            } else if (bTinggalanAwal || bTinggalanAkhir) {
+                no_batch_tinggalan = `${bTinggalanAwal || bTinggalanAkhir} (${tglTinggalanTxt})`;
+            } else {
+                no_batch_tinggalan = '-';
+            }
+        }
+
+        const optKode3 = document.querySelector('input[name="opt_kode3"]:checked').value;
+        const bKode3Awal = document.getElementById('kode3_batch_awal').value.trim();
+        const bKode3Akhir = document.getElementById('kode3_batch_akhir').value.trim();
+        let no_batch_kode3 = '';
+        if (optKode3 === 'ada') {
+            if (bKode3Awal && bKode3Akhir) {
+                no_batch_kode3 = `${bKode3Awal}-${bKode3Akhir} (Kode-3)`;
+            } else if (bKode3Awal || bKode3Akhir) {
+                no_batch_kode3 = `${bKode3Awal || bKode3Akhir} (Kode-3)`;
+            } else {
+                no_batch_kode3 = '-';
+            }
+        }
+
+        const pakai_vp = document.getElementById('pakai_vp').value;
+
+        const inputKendalaArr = document.getElementsByClassName('input-kendala');
+        let kendalaList = [];
+        for (let i = 0; i < inputKendalaArr.length; i++) {
+            let isi = inputKendalaArr[i].value.trim();
+            if (isi) {
+                if (!isi.startsWith('-') && !isi.startsWith('•')) {
+                    isi = '- ' + isi;
+                }
+                kendalaList.push(isi);
+            }
+        }
+        const kendalaFormat = kendalaList.length > 0 ? kendalaList.join('\n') : '-';
+
+        let textWA = `*Laporan ${mesin} ${produk}*\n`;
+        textWA += `${hari_tgl}\n`;
+        textWA += `Shift: ${shiftFull}\n\n`;
+        
+        if (mesin === "MHC") {
+            textWA += `*Reject MHC*\n`;
+        } else {
+            textWA += `*Reject MHW*\n`;
+        }
+        textWA += `- Horizontal   : ${formatNilai(hrz, false)} (${formatNilai(hrz, true, jumlahMHW)})\n`;
+        textWA += `- Vertical        : ${formatNilai(vrt, false)} (${formatNilai(vrt, true, jumlahMHW)})\n`;
+        textWA += `- Lubang         : ${formatNilai(lbg, false)} (${formatNilai(lbg, true, jumlahMHW)})\n`;
+        textWA += `- Setting          : ${formatNilai(stg, false)} (${formatNilai(stg, true, jumlahMHW)})\n`;
+        textWA += `- Over               : ${formatNilai(ovr, false)} (${formatNilai(ovr, true, jumlahMHW)})\n`;
+        textWA += `- Under            : ${formatNilai(udr, false)} (${formatNilai(udr, true, jumlahMHW)})\n`;
+        textWA += `- Crash             : ${formatNilai(crs, false)} (${formatNilai(crs, true, jumlahMHW)})\n`;
+        textWA += `- Terlipat          : ${formatNilai(tlp, false)} (${formatNilai(tlp, true, jumlahMHW)})\n`;
+        textWA += `- *Total Reject : ${totalReject} pcs (${formatNilai(totalReject, true, jumlahMHW)})*\n\n`;
+
+        if (mesin === "MHC") {
+            textWA += `*Hasil MHC*\n`;
+            textWA += `- Hasil                   : ${e1} pack\n`;
+        } else {
+            textWA += `*Hasil MHW*\n`;
+            if (mesin === "MHW-3") {
+                textWA += `- C1                        : ${e1} pack\n`;
+                textWA += `- C2                        : ${e2} pack\n`;
+            } else {
+                textWA += `- E1                        : ${e1} pack\n`;
+                textWA += `- E2                        : ${e2} pack\n`;
+            }
+            textWA += `- *Jumlah               : ${jumlahMHW} pack*\n`;
+        }
+        textWA += `- *Total Packing   : ${totalPacking}*\n\n`;
+
+        const optVp = document.querySelector('input[name="opt_vp"]:checked').value;
+        if (optVp === 'ya') {
+            const s_sedikit = parseInt(document.getElementById('sam_sedikit').value) || 0;
+            const s_sedang = parseInt(document.getElementById('sam_sedang').value) || 0;
+            const s_banyak = parseInt(document.getElementById('sam_banyak').value) || 0;
+            const s_oke = parseInt(document.getElementById('sam_oke').value) || 0;
+            const totalSampel = s_sedikit + s_sedang + s_banyak + s_oke;
+
+            textWA += `*Sampel VP Terlipat*\n`;
+            textWA += `- Sedikit       : ${formatSampel(s_sedikit)}\n`;
+            textWA += `- Sedang      : ${formatSampel(s_sedang)}\n`;
+            textWA += `- Banyak      : ${formatSampel(s_banyak)}\n`;
+            textWA += `- Oke             : ${formatSampel(s_oke)}\n`;
+            textWA += `- *Total          : ${totalSampel} pack*\n\n`;
+        }
+
+        if (optTinggalan === 'ada') {
+            textWA += `*No Batch       : ${no_batch_tinggalan}*\n`;
+        }
+        if (optKode3 === 'ada') {
+            textWA += `*No Batch       : ${no_batch_kode3}*\n`;
+        }
+        textWA += `*No Batch       : ${no_batch}*\n\n`;
+        textWA += `*Pemakaian VP   : ${pakai_vp}*\n\n`;
+        textWA += `*KENDALA*\n${kendalaFormat}`;
+
+        const previewBox = document.getElementById('previewBox');
+        previewBox.innerText = textWA;
+        previewBox.classList.add('generated');
+        
+        document.getElementById('btnCopy').style.display = 'block';
+    }
+
+    function copyKeClipboard() {
+        const previewBox = document.getElementById('previewBox');
+        const textWA = previewBox.innerText;
+
+        function tampilkanToast() {
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+        }
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(textWA)
+                .then(() => { tampilkanToast(); })
+                .catch(err => { jalankanFallbackCopyNoKeyboard(previewBox, tampilkanToast); });
+        } else {
+            jalankanFallbackCopyNoKeyboard(previewBox, tampilkanToast);
+        }
+    }
+
+    function jalankanFallbackCopyNoKeyboard(elemen, callbackSukses) {
+        const range = document.createRange();
+        range.selectNodeContents(elemen);
+        
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        try {
+            const sukses = document.execCommand('copy');
+            if (sukses) {
+                callbackSukses();
+            } else {
+                alert('Gagal menyalin teks. Silakan blok tulisan di atas secara manual.');
+            }
+        } catch (err) {
+            alert('Gagal menyalin teks. Silakan blok tulisan di bawah secara manual.');
+        }
+        
+        selection.removeAllRanges();
+    }
+</script>
+
+</body>
+</html>
