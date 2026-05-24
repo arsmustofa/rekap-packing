@@ -81,6 +81,7 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             transition: all 0.2s ease-in-out;
             border-left: 5px solid #2a5298;
+            cursor: pointer;
         }
 
         /* Efek Sentuhan / Hover */
@@ -121,7 +122,7 @@
             line-height: 1.3;
         }
 
-        /* Panah Kanan */
+        /* Panah Kanan / Gembok */
         .arrow-icon {
             color: #bbb;
             font-size: 1.2rem;
@@ -164,7 +165,7 @@
         
         <div class="menu-grid">
             
-            <a href="rekap-packing.html" class="menu-card menu-rekap">
+            <a href="rekap-packing.html" class="menu-card menu-rekap" onclick="kunciMenu(event, this)">
                 <div class="menu-icon">📊</div>
                 <div class="menu-info">
                     <h2>Rekap Packing</h2>
@@ -173,7 +174,7 @@
                 <div class="arrow-icon">➔</div>
             </a>
 
-            <a href="konversi-packing.html" class="menu-card menu-konversi">
+            <a href="konversi-packing.html" class="menu-card menu-konversi" onclick="kunciMenu(event, this)">
                 <div class="menu-icon">🔄</div>
                 <div class="menu-info">
                     <h2>Konversi Packing</h2>
@@ -182,7 +183,7 @@
                 <div class="arrow-icon">➔</div>
             </a>
 
-            <a href="mhw-line4.html" class="menu-card menu-mhw">
+            <a href="mhw-line4.html" class="menu-card menu-mhw" onclick="kunciMenu(event, this)">
                 <div class="menu-icon">⚖️</div>
                 <div class="menu-info">
                     <h2>Laporan MHW</h2>
@@ -197,6 +198,25 @@
     <footer>
         <p>© 2026 Mandiri Proyek | Dikembangkan oleh <strong>Aris Mustofa</strong></p>
     </footer>
+
+    <script>
+        function kunciMenu(event, elemen) {
+            // Menghentikan aksi default agar tidak berpindah halaman
+            event.preventDefault(); 
+            
+            // Menampilkan popup pesan peringatan
+            alert("Maaf, untuk sementara aplikasi dikunci oleh Leader packing line 4. Untuk dapat mengaksesnya hubungi Aris Mustofa");
+            
+            // Setelah user klik 'OK' pada alert, cari elemen dengan class 'arrow-icon' di dalam menu yang diklik
+            var ikonPanah = elemen.querySelector('.arrow-icon');
+            
+            // Ubah teks/ikon di dalamnya menjadi gembok
+            if (ikonPanah) {
+                ikonPanah.innerText = "🔒";
+                ikonPanah.style.color = "#dc3545"; // Opsional: Mengubah warna gembok jadi merah agar lebih kontras
+            }
+        }
+    </script>
 
 </body>
 </html>
